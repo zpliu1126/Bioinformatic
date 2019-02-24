@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="/includes/head.js"></script>
+	<title>CRISPR软件学习</title>
+
+</head>
+<body>
+	<div class="container">
+		<h1>今天把sgcas9这个软件的流程走了一遍，批量设计了300多个基因的sgRNA</h1>
+
+	<p>
+		<h2>主要流程</h2>
+		<ul class="text-success" style="font-size: 25px">
+			<li>准备文件 基因组文件、基因的CDS文件、基因组注释的gtf文件</li>
+			<li>上述文件都需要放在sgRNAcas9软件目录</li>
+			<li>运行命令</li>
+			<code>perl sgRNAcas9_3.0.5.pl -i genome_cds.fa -x 20 -l 40 -m 60 -g genome.fa -o b -t s -v l -n 5
+</code><br>
+<div class="text-primary">具体参数意义，参考RADME.txt文件</div>
+<li>在输出文件夹中sgRNAcas9_report.xls为主要文件</li>
+<li>接下来对sgRNA是否在对于的基因位置上进行验证；验证脚本在软件包Usefull_Script目录下的ot2gtf_v2.pl脚本</li>
+<br>
+<div class="text-danger">脚本中仍旧需要修改一下，由于正则表达式默认匹配的是人类染色体</div>
+<div><img src="./image/ot2gtf.png" width="80%" alt=""></div>
+<div class="text-info">
+			输出文件中主要是看最后一列的风险等级，和结合0M、1M、2M等一起看
+			
+			<img src="./image/rank.png" alt="" width="80%">
+			<br>
+			风险值：Discard > High_risk > moderate_risk > low_risk > repeat_sites_or_bad ? > Best
+</div>
+<li>例如抓取Best等级的sgRNA编号对应的脱靶序列信息，与基因组的gtf文件进行比较看是否是命中对应基因</li>
+<div><img src="./image/offTarget.png" alt="" width="80%"></div>
+<li>使用ot2gtf.pl运行之后得到对应的结果文件；判断第一列和最后一列基因id是否一致</li>
+<hr>
+<div class="text-primary">
+	在判断一个sgRNA是否对应同一个基因时，我使用 <code>awk</code>进行判断
+	<br>当第一列与最后一列一样时，在最后输出0；否则输出1；最后将sgRNA编号对于的值相加就得到唯一靶标的sgRNA了 <br>
+<img src="./image/ot2gtfOutput.png" width="80%" alt="">
+
+</div>
+<li>结果中同一个基因可能会有多个sgRNA对应了；这时就应该选择尽量靠近5‘端打靶的sgRNA了</li>
+<div>这里我写了一个awk脚本分别对sgRNA和基因的四种位置关系进行判断
+<br>
+<a href="">---------awk脚本--------</a>
+</div>
+<li>最后就是获取到基因起始位点最短距离的sgRNA，并且去除3’端的NGG；然后加上接头就可以啦！</li>
+<div>
+<pre id="sgRNA" style="display: none;">
+&gtGhir_A01G001970_S_13
+CCATCTGTTCTGACTTCCGCCGG
+&gtGhir_A01G001980_A_1
+GCAACTCATTAACCCATCCGAGG
+&gtGhir_A01G002890_S_20
+AGACGCAGATTACTCATCCTCGG
+&gtGhir_A01G005790_S_62
+CATGGTTAACCCTCTCAAAAGGG
+&gtGhir_A01G006390_A_55
+TGCTTAGAGACGAAGGATGTCGG
+&gtGhir_A01G007780_S_53
+TGCCGCTATTTCTGGTACAGAGG
+&gtGhir_A01G008070_A_7
+GTAGTCTTCAAAGCCTAAGGTGG
+&gtGhir_A01G009280_A_107
+CATTGGGTAGCTTTGCAGCCAGG
+&gtGhir_A01G010790_A_2
+GGCCTCTGCATCAAGAGACATGG
+</pre>
+<script>sourceCodeById("sgRNA")</script>
+</div>
+</ul>
+		
+	</p>
+
+<footer id="footer">
+	
+</footer>
+<script>
+	$("#footer").load("/includes/footer.html.php");
+</script>
+		
+	</div>
+
+
+
+
+</body>
+</html>
