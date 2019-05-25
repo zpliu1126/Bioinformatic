@@ -1,8 +1,13 @@
-#coding utf-8
-#
+#coding:utf-8
 '''
 读取基因的gff数据
 [geneID:[flag,start,end]]
+1.需要基因组gff注释文件
+2.ot2gtf脚本处理并且过滤之后的文件
+3.每个基因的长度信息
+eg： Ghir_A09G006360 填15
+4.sgRNA的结果文件 sgRNAcas9_report.xls
+5.输出文件
 '''
 def usage():
 	print("usage:\n")
@@ -47,6 +52,7 @@ for i in range(0,len(list1)):
 	if tmp[2]!="gene":
 		continue
 	else:
+		#获取对应的基因编号
 		genelist[tmp[8][3:18]]=[tmp[6],tmp[3],tmp[4]]
 		
 with open(sgRNAfile,'r') as sgRNA:
@@ -59,6 +65,7 @@ for i in range(0,len(list2)):
 	list2[i]=list2[i].strip('\n')
 	tmp=list2[i].split()
 	sgRNAlist[tmp[0][0:genelength]]=[0 for i in range(4)]
+	# 获取靶向基因的信息
 	if genelist[tmp[-1]][0]=="+":
 		sgRNAlist[tmp[0][0:genelength]][0]=tmp[0]
 		sgRNAlist[tmp[0][0:genelength]][1]=int(tmp[-3])-int(genelist[tmp[-1]][1])
@@ -125,6 +132,7 @@ def complement(s):
 #输出文件
 with open(outfile,'w') as out:
 	for k in sgRNAlist:
+		# 仅仅只找到一个sgRNA
 		if sgRNAlist[k][2]==0:
 			seq1="Ttctagctctaaaac"+complement(seq[sgRNAlist[k][0]][0:20][::-1])+"tgcaccagccgggaat"
 			out.write(">"+str(k)+"\n"+"source"+"\t"+seq[sgRNAlist[k][0]]+"\n"+seq1+"\n")
@@ -132,5 +140,3 @@ with open(outfile,'w') as out:
 			seq1="Ttctagctctaaaac"+complement(seq[sgRNAlist[k][0]][0:20][::-1])+"tgcaccagccgggaat"
 			seq2="Ttctagctctaaaac"+complement(seq[sgRNAlist[k][2]][0:20][::-1])+"tgcaccagccgggaat"
 			out.write(">"+str(k)+"\n"+"source"+"\t"+seq[sgRNAlist[k][0]]+"\n"+seq1+"\n"+"source"+"\t"+seq[sgRNAlist[k][2]]+"\n"+seq2+"\n")
-
-
