@@ -4,7 +4,7 @@
 [geneID:[flag,start,end]]
 1.需要基因组gff注释文件
 2.ot2gtf脚本处理并且过滤之后的文件
-3.每个基因的长度信息
+3.每个基因名字的长度信息
 eg： Ghir_A09G006360 填15
 4.sgRNA的结果文件 sgRNAcas9_report.xls
 5.输出文件
