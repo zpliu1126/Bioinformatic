@@ -135,8 +135,8 @@ with open(outfile,'w') as out:
 		# 仅仅只找到一个sgRNA
 		if sgRNAlist[k][2]==0:
 			seq1="Ttctagctctaaaac"+complement(seq[sgRNAlist[k][0]][0:20][::-1])+"tgcaccagccgggaat"
-			out.write(">"+str(k)+"\n"+"source"+"\t"+seq[sgRNAlist[k][0]]+"\n"+seq1+"\n")
+			out.write(">"+str(k)+"\t"+seq[sgRNAlist[k][0]]+"\n"+seq1+"\n")
 		else:
 			seq1="Ttctagctctaaaac"+complement(seq[sgRNAlist[k][0]][0:20][::-1])+"tgcaccagccgggaat"
 			seq2="Ttctagctctaaaac"+complement(seq[sgRNAlist[k][2]][0:20][::-1])+"tgcaccagccgggaat"
-			out.write(">"+str(k)+"\n"+"source"+"\t"+seq[sgRNAlist[k][0]]+"\n"+seq1+"\n"+"source"+"\t"+seq[sgRNAlist[k][2]]+"\n"+seq2+"\n")
+			out.write(">"+str(k)+"\t"+seq[sgRNAlist[k][0]]+"\t"+seq1+"\t"+seq[sgRNAlist[k][2]]+"\t"+seq2+"\n")
